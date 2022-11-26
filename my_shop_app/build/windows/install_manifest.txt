@@ -1,0 +1,12 @@
+E:/flutter_projects/my_shop_app/build/windows/runner/Debug/data/icudtl.dat
+E:/flutter_projects/my_shop_app/build/windows/runner/Debug/flutter_windows.dll
+E:/flutter_projects/my_shop_app/build/windows/runner/Debug/data/flutter_assets/AssetManifest.json
+E:/flutter_projects/my_shop_app/build/windows/runner/Debug/data/flutter_assets/assets/fonts/Anton-Regular.ttf
+E:/flutter_projects/my_shop_app/build/windows/runner/Debug/data/flutter_assets/assets/fonts/Lato-Bold.ttf
+E:/flutter_projects/my_shop_app/build/windows/runner/Debug/data/flutter_assets/assets/fonts/Lato-Regular.ttf
+E:/flutter_projects/my_shop_app/build/windows/runner/Debug/data/flutter_assets/FontManifest.json
+E:/flutter_projects/my_shop_app/build/windows/runner/Debug/data/flutter_assets/fonts/MaterialIcons-Regular.otf
+E:/flutter_projects/my_shop_app/build/windows/runner/Debug/data/flutter_assets/kernel_blob.bin
+E:/flutter_projects/my_shop_app/build/windows/runner/Debug/data/flutter_assets/NOTICES.Z
+E:/flutter_projects/my_shop_app/build/windows/runner/Debug/data/flutter_assets/packages/cupertino_icons/assets/CupertinoIcons.ttf
+E:/flutter_projects/my_shop_app/build/windows/runner/Debug/data/flutter_assets/shaders/ink_sparkle.frag
