@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:my_shop_app/Providers/cart.dart';
+import '../widget/badge.dart';
 import '../widget/gridView_of_product.dart';
+import 'package:provider/provider.dart';
 
 class ProductOverview extends StatefulWidget {
   const ProductOverview({
@@ -18,6 +21,16 @@ class _ProductOverviewState extends State<ProductOverview> {
         appBar: AppBar(
           title: const Text("My Shop"),
           actions: [
+            Consumer<Cart>(
+              builder: (context, cart, child) =>
+                  Badge(value: cart.itemCount.toString(), child: child!),
+              child: IconButton(
+                icon: const Icon(Icons.shopping_cart),
+                color: Colors.black,
+                onPressed: () {
+                },
+              ),
+            ),
             PopupMenuButton(
               itemBuilder: ((context) {
                 return [
@@ -29,11 +42,12 @@ class _ProductOverviewState extends State<ProductOverview> {
                     ),
                   ),
                   const PopupMenuItem(
-                      value: 1,
-                      child: Text(
-                        "Show All",
-                        style: TextStyle(fontFamily: 'Lato'),
-                      )),
+                    value: 1,
+                    child: Text(
+                      "Show All",
+                      style: TextStyle(fontFamily: 'Lato'),
+                    ),
+                  ),
                 ];
               }),
               icon: const Icon(Icons.more_vert),
@@ -46,7 +60,7 @@ class _ProductOverviewState extends State<ProductOverview> {
                   }
                 });
               },
-            )
+            ),
           ],
         ),
         body: GridViewOfProducts(

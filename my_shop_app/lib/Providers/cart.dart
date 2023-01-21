@@ -18,16 +18,32 @@ class Cart with ChangeNotifier {
     return {..._items};
   }
 
-  void addItem(String productId, double price, String title) {
+  int get itemCount {
+    print(_items.length);
+    return _items.length;
+  }
+
+  void addItem(
+      {required String productId,
+      required double price,
+      required String title}) {
     if (_items.containsKey(productId)) {
       //If product is already present the we just have to add 1 to the item
-      items.update(productId, (existingValue) =>CartItem(id: existingValue.id, title:existingValue.title, quantity: existingValue.quantity + 1, price:existingValue.price) );
+      _items.update(
+          productId,
+          (existingValue) => CartItem(
+              id: existingValue.id,
+              title: existingValue.title,
+              quantity: existingValue.quantity + 1,
+              price: existingValue.price));
+      //to notifyevry widgit listening to it
     } else {
       //If product is  absent
-      items.putIfAbsent(
+      _items.putIfAbsent(
           productId,
           () =>
               CartItem(id: productId, title: title, quantity: 1, price: price));
     }
+    notifyListeners();
   }
 }

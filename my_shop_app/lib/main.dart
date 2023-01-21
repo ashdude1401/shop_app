@@ -1,6 +1,6 @@
-import 'package:flutter/foundation.dart';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
+import 'package:my_shop_app/Providers/cart.dart';
 import 'package:my_shop_app/Providers/products.dart';
 import 'package:my_shop_app/screen/Product_overview.dart';
 import 'package:my_shop_app/screen/productDetail.dart';
@@ -14,9 +14,15 @@ class MyShopApp extends StatelessWidget {
   const MyShopApp({super.key});
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: ((context) => Products()),
-      //New instance of Products
+
+    //Setting up the Multiple provider as now there are two object data which is required at many places setting up here because it is the top most class 
+
+    return MultiProvider(providers:[
+      ChangeNotifierProvider(
+      create: ((context) => Products())),
+      ChangeNotifierProvider(create: (context) => Cart(),) 
+    ] ,
+    
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: "My shop App",
