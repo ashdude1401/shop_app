@@ -14,7 +14,7 @@ class GridViewOfProducts extends StatelessWidget {
   Widget build(BuildContext context) {
     final productData = Provider.of<Products>(context);
     final productList =
-        favFilterOn == true ? Products().favItems : Products().items;
+        favFilterOn == true ? productData.favItems : productData.items;
     print(productList);
     return GridView.builder(
       padding: const EdgeInsets.all(10.0),

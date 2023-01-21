@@ -1,4 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:my_shop_app/Providers/products.dart';
 import 'package:my_shop_app/screen/Product_overview.dart';
 import 'package:my_shop_app/screen/productDetail.dart';
@@ -13,14 +15,18 @@ class MyShopApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create:((context) => Products()),
+      create: ((context) => Products()),
       //New instance of Products
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: "My shop App",
-        home:const  MyHomePage(),
-        theme: ThemeData(primarySwatch: Colors.purple,fontFamily: 'Anton',iconTheme: const IconThemeData(color: Colors.orange)),
-        routes:{
-          ProductDetail.routeName:(context) =>const ProductDetail(),
+        home: const MyHomePage(),
+        theme: ThemeData(
+            primarySwatch: Colors.purple,
+            fontFamily: 'Anton',
+            iconTheme: const IconThemeData(color: Colors.orange)),
+        routes: {
+          ProductDetail.routeName: (context) => const ProductDetail(),
         },
       ),
     );
