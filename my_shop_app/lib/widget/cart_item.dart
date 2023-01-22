@@ -45,7 +45,7 @@ class CartItem extends StatelessWidget {
         Provider.of<Cart>(context,listen: false).removeItem(productId);
 
         //Here we required the cart productId data only to pass it into removeItem so that we can remove that from cart and update the other accordingly
-        
+
       },
       child: Card(
         margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),

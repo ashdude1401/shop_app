@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:my_shop_app/Providers/cart.dart' show Cart;
+import '../Providers/cart.dart' show Cart;
 
 //it only imports Cart from cart.dart
 
 import 'package:provider/provider.dart';
 import '../widget/cart_item.dart';
+import '../Providers/order.dart';
 
 class CartOverviewScreen extends StatelessWidget {
   const CartOverviewScreen({super.key});
@@ -47,7 +48,16 @@ class CartOverviewScreen extends StatelessWidget {
                     backgroundColor: Theme.of(context).primaryColor,
                   ),
                   TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        //Because we only want to get the data
+
+                        Provider.of<Orders>(context, listen: false).addOrder(
+                            cart.items.values.toList(), cart.totalItemPrice);
+
+                        //Here we have set listen to true because we want other who are listening to cart notified by the changes
+
+                        cart.clear();
+                      },
                       child: const Text(
                         "Place Order",
                         style: TextStyle(color: Colors.black54, fontSize: 18),
