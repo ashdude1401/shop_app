@@ -12,7 +12,7 @@ class ProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final productItem = Provider.of<Product>(context, listen: false);
-    final cart = Provider.of<Cart>(context);
+    final cart = Provider.of<Cart>(context, listen: false);
     onPress(context) {
       Navigator.of(context)
           .pushNamed(ProductDetail.routeName, arguments: productItem.id);
@@ -54,7 +54,10 @@ class ProductCard extends StatelessWidget {
           color: Theme.of(context).iconTheme.color,
         ),
         onPressed: () {
-          cart.addItem(productId: productItem.id, price: productItem.price, title: productItem.title);
+          cart.addItem(
+              productId: productItem.id,
+              price: productItem.price,
+              title: productItem.title);
         },
       ),
     );

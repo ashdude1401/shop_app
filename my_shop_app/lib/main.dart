@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:my_shop_app/Providers/cart.dart';
 import 'package:my_shop_app/Providers/products.dart';
 import 'package:my_shop_app/screen/Product_overview.dart';
+import 'package:my_shop_app/screen/cart_screen.dart';
 import 'package:my_shop_app/screen/productDetail.dart';
 import 'package:provider/provider.dart';
 
@@ -33,6 +34,7 @@ class MyShopApp extends StatelessWidget {
             iconTheme: const IconThemeData(color: Colors.orange)),
         routes: {
           ProductDetail.routeName: (context) => const ProductDetail(),
+          CartOverviewScreen.routeName:(context) => const CartOverviewScreen(),
         },
       ),
     );
