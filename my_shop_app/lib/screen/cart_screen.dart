@@ -13,6 +13,9 @@ class CartOverviewScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cart = Provider.of<Cart>(context);
+
+    //cart will listen to all the change which will happen in future
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Your Cart"),
@@ -21,7 +24,7 @@ class CartOverviewScreen extends StatelessWidget {
         children: [
           Card(
             elevation: 10,
-            margin:const EdgeInsets.symmetric(horizontal: 8,vertical: 12),
+            margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
             child: Padding(
               padding: const EdgeInsets.all(10.0),
               child: Row(
@@ -59,7 +62,10 @@ class CartOverviewScreen extends StatelessWidget {
            */
           Expanded(
             child: ListView.builder(
+              //here it is important because we need first
               itemBuilder: ((context, i) => CartItem(
+                  id: cart.items.values.toList()[i].id,
+                  productId: cart.items.keys.toList()[i],
                   title: cart.items.values.toList()[i].title,
                   price: cart.items.values.toList()[i].price,
                   quantity: cart.items.values.toList()[i].quantity)),
