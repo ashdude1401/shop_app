@@ -63,4 +63,29 @@ class Cart with ChangeNotifier {
     _items.clear();
     notifyListeners();
   }
+
+  void removeAddedItem(String productId) {
+    //IF not present then don't do anything
+    if (!_items.containsKey(productId)) {
+      return;
+    }
+
+    int? quantity = _items[productId]?.quantity;
+    if (quantity != null && quantity > 1) {
+      //If present then check if the quantity is more then one or not
+
+      _items.update(
+          productId,
+          (existingProduct) => CartItem(
+              id: existingProduct.id,
+              title: existingProduct.title,
+              quantity: existingProduct.quantity - 1,
+              price: existingProduct.price));
+    } else {
+      //if the quantity is one then remove the product from cart
+
+      _items.remove(productId);
+    }
+    notifyListeners();
+  }
 }

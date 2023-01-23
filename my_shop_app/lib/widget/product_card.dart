@@ -58,6 +58,24 @@ class ProductCard extends StatelessWidget {
               productId: productItem.id,
               price: productItem.price,
               title: productItem.title);
+
+          //To show newest added content we can hide the present content
+
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+
+          //To show the snakbar when ever product is added,ScaffoldMessasenger gets connected to nearest scaffold or page which is visible to user
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: const Text("Add new Item !"),
+              duration: const Duration(seconds: 2),
+              action: SnackBarAction(
+                  label: "UNDO",
+                  onPressed: () {
+                    cart.removeAddedItem(productItem.id);
+                  }),
+            ),
+          );
         },
       ),
     );
