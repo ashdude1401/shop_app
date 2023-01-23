@@ -42,10 +42,30 @@ class CartItem extends StatelessWidget {
       onDismissed: (direction) {
         //remove the item from the cart and update the cart Amount
 
-        Provider.of<Cart>(context,listen: false).removeItem(productId);
+        Provider.of<Cart>(context, listen: false).removeItem(productId);
 
         //Here we required the cart productId data only to pass it into removeItem so that we can remove that from cart and update the other accordingly
+      },
+      confirmDismiss: (direction) {
+        //showDialog box show a dialog box and return a future object which return bool value
 
+        return showDialog(
+            context: context,
+            builder: ((context) => AlertDialog(
+                  title: const Text("Are you sure ?"),
+                  content:
+                      const Text("You want to remove the item from the cart"),
+                  actions: [
+                    TextButton(
+                      onPressed: (() => Navigator.of(context).pop(true)),
+                      child: const Text("YES"),
+                    ),
+                    TextButton(
+                      onPressed: (() => Navigator.of(context).pop(false)),
+                      child: const Text("NO"),
+                    )
+                  ],
+                )));
       },
       child: Card(
         margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
@@ -56,7 +76,9 @@ class CartItem extends StatelessWidget {
             leading: CircleAvatar(
                 child: Padding(
               padding: const EdgeInsets.all(4.0),
+
               //to fit the text inside the circleAvatar
+
               child: Padding(
                 padding: const EdgeInsets.all(2.0),
                 child: FittedBox(child: Text("\$ $price")),
