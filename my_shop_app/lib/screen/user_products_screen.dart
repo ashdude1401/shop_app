@@ -4,8 +4,8 @@ import '../widget/user_product.dart';
 import 'package:provider/provider.dart';
 import '../Providers/products.dart';
 
-class UserProducts extends StatelessWidget {
-  const UserProducts({super.key});
+class UserProductsScreen extends StatelessWidget {
+  const UserProductsScreen({super.key});
 
   static const routeName = '/userProducts';
 
