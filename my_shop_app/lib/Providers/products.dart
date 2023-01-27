@@ -73,7 +73,8 @@ class Products with ChangeNotifier {
     }
   }
 
-
-  @override
-  notifyListeners();
+  void deleteItem(String id) {
+    _productItems.removeWhere((element) => element.id == id);
+    notifyListeners();
+  }
 }

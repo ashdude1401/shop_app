@@ -46,7 +46,7 @@ class ProductCard extends StatelessWidget {
       ),
       title: Text(
         productItem.title,
-        textAlign: TextAlign.center,
+        // textAlign: TextAlign.center,
       ),
       trailing: IconButton(
         icon: Icon(
