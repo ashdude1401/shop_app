@@ -34,9 +34,49 @@ class _EditProductScreenState extends State<EditProductScreen> {
     // TODO: implement initState
     _imageUrlFocusNode.addListener(_updateImageUrl);
 
+    //We can use data from route in init state
+
     //function called when focus changes
 
     super.initState();
+  }
+
+  var _isInt = true;
+  var intiValues = {
+    'title': '',
+    'discription': '',
+    'price': '',
+    'imgUrl': '',
+  };
+  @override
+  void didChangeDependencies() {
+    //Runs befor build is exicuted
+
+    if (_isInt == true) {
+      //Run only one time as didChageDependencies run many time
+
+      final productId = ModalRoute.of(context)?.settings.arguments;
+
+      if (productId != null) {
+        //checking for whether we are editing the product or adding new product as if we are adding ,we will not get the productId as we havent passed productId when user clicks on '+' button on manege product screen
+
+        final product = Provider.of<Products>(context, listen: false)
+            .items
+            .firstWhere((prod) => prod.id == productId);
+        intiValues = {
+          'title': product.title,
+          'discription': product.discription,
+          'price': product.price.toString(),
+          // 'imgUrl': product.imgUrl
+          'imgUrl': '',
+        };
+        _imageUrlController.text = product.imgUrl;
+      }
+    }
+
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    _isInt = false;
   }
 
   void _updateImageUrl() {
@@ -59,7 +99,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
     //We have to save the inputs in Form inputTextField by refering to .save() method present in form which excessed using _formKey.currentState
 
     final isValid = _formKey.currentState?.validate();
+
     // ignore: unrelated_type_equality_checks
+
     if (isValid == false) {
       return;
     }
@@ -68,7 +110,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
     //Here we do not have ser listen to false because we only want to invoke the methode and don't want to listen to the changes (i.e we don't want to rebuild if something changes. Provider is same a setState (listen:true) it rebuilds the parent widget)
 
     Provider.of<Products>(context, listen: false).addItem(_editedProduct);
-    print("${_editedProduct.title} is  Edited product title ");
     Navigator.of(context).pop();
   }
 
@@ -98,6 +139,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
                   TextFormField(
                     //It is connected to Form behind scence
 
+                    initialValue: intiValues['title'],
+
                     decoration: const InputDecoration(
                       //Hint text
 
@@ -121,7 +164,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
 
                     onSaved: (newValue) {
                       //OverWriting the existing Product
-                      print(newValue);
+
                       if (newValue != null) {
                         _editedProduct = Product(
                             id: _editedProduct.id,
@@ -130,9 +173,12 @@ class _EditProductScreenState extends State<EditProductScreen> {
                             price: _editedProduct.price,
                             imgUrl: _editedProduct.imgUrl);
                       }
+                      print(_editedProduct.title);
                     },
                   ),
                   TextFormField(
+                    initialValue: intiValues['price'],
+
                     //It is connected to Form behind scence
 
                     decoration: const InputDecoration(
@@ -169,6 +215,10 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     },
                   ),
                   TextFormField(
+                    //setting up the initial values
+
+                    initialValue: intiValues['discription'],
+
                     //It is connected to Form behind scence
 
                     decoration: const InputDecoration(
@@ -201,7 +251,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
 
                       _editedProduct = Product(
                           id: _editedProduct.id,
-                          title: _editedProduct.id,
+                          title: _editedProduct.title,
                           discription: newValue!,
                           price: _editedProduct.price,
                           imgUrl: _editedProduct.imgUrl);
@@ -237,6 +287,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
                       ),
                       Expanded(
                         child: TextFormField(
+                          // initialValue: intiValues['imgUrl'],we cannot have controller and intial values same time we can configure the intial value using imgUrlcontroller
+
                           decoration: const InputDecoration(
                             hintText: 'Image URL',
                           ),
@@ -263,7 +315,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
 
                             _editedProduct = Product(
                                 id: _editedProduct.id,
-                                title: _editedProduct.id,
+                                title: _editedProduct.title,
                                 discription: _editedProduct.discription,
                                 price: _editedProduct.price,
                                 imgUrl: newValue!);
