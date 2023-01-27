@@ -1,8 +1,9 @@
 //To create order class having everything in the order in order class
 
-import '../Providers/cart.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import '../Providers/cart.dart';
 
 class OrderItem {
   final String id;

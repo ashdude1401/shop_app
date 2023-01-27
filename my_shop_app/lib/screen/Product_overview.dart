@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:my_shop_app/Providers/cart.dart';
 import 'package:my_shop_app/screen/cart_screen.dart';
 import 'package:my_shop_app/widget/app_drawer.dart';
-import '../widget/badge.dart';
+// import '../widget/badge.dart';
 import '../widget/gridView_of_product.dart';
 import 'package:provider/provider.dart';
 
@@ -24,15 +24,19 @@ class _ProductOverviewState extends State<ProductOverview> {
           title: const Text("My Shop"),
           actions: [
             Consumer<Cart>(
-              builder: (context, cart, child) =>
-                  Badge(value: cart.itemCount.toString(), child: child!),
-              child: IconButton(
-                icon: const Icon(Icons.shopping_cart),
-                color: Colors.black,
-                onPressed: () {
-                  Navigator.of(context).pushNamed(CartOverviewScreen.routeName);
-                },
-              ),
+              builder: (context, cart, child) {
+                return Badge(
+                  label: Text(cart.itemCount.toString()),
+                  child: IconButton(
+                    icon: const Icon(Icons.shopping_cart),
+                    color: Colors.black,
+                    onPressed: () {
+                      Navigator.of(context)
+                          .pushNamed(CartOverviewScreen.routeName);
+                    },
+                  ),
+                );
+              },
             ),
             PopupMenuButton(
               itemBuilder: ((context) {

@@ -18,6 +18,6 @@ class Product with ChangeNotifier {
     required this.discription,
     required this.price,
     required this.imgUrl,
-    this.isFavoraite=false,
+    this.isFavoraite=false, 
   });
 }
