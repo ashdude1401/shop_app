@@ -43,6 +43,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
 
   var _isInt = true;
   var intiValues = {
+    'id': '',
     'title': '',
     'discription': '',
     'price': '',
@@ -56,21 +57,23 @@ class _EditProductScreenState extends State<EditProductScreen> {
       //Run only one time as didChageDependencies run many time
 
       final productId = ModalRoute.of(context)?.settings.arguments;
+      print("Product ID is $productId");
 
       if (productId != null) {
         //checking for whether we are editing the product or adding new product as if we are adding ,we will not get the productId as we havent passed productId when user clicks on '+' button on manege product screen
 
-        final product = Provider.of<Products>(context, listen: false)
+        _editedProduct = Provider.of<Products>(context, listen: false)
             .items
             .firstWhere((prod) => prod.id == productId);
+
         intiValues = {
-          'title': product.title,
-          'discription': product.discription,
-          'price': product.price.toString(),
+          'title': _editedProduct.title,
+          'discription': _editedProduct.discription,
+          'price': _editedProduct.price.toString(),
           // 'imgUrl': product.imgUrl
           'imgUrl': '',
         };
-        _imageUrlController.text = product.imgUrl;
+        _imageUrlController.text = _editedProduct.imgUrl;
       }
     }
 
@@ -109,7 +112,13 @@ class _EditProductScreenState extends State<EditProductScreen> {
 
     //Here we do not have ser listen to false because we only want to invoke the methode and don't want to listen to the changes (i.e we don't want to rebuild if something changes. Provider is same a setState (listen:true) it rebuilds the parent widget)
 
-    Provider.of<Products>(context, listen: false).addItem(_editedProduct);
+    if (_editedProduct.id == '') {
+      Provider.of<Products>(context, listen: false).addItem(_editedProduct);
+    } else {
+      Provider.of<Products>(context, listen: false)
+          .updateItem(_editedProduct.id, _editedProduct);
+    }
+
     Navigator.of(context).pop();
   }
 
@@ -171,9 +180,10 @@ class _EditProductScreenState extends State<EditProductScreen> {
                             title: newValue,
                             discription: _editedProduct.discription,
                             price: _editedProduct.price,
-                            imgUrl: _editedProduct.imgUrl);
+                            imgUrl: _editedProduct.imgUrl,
+                            isFavoraite: _editedProduct.isFavoraite);
                       }
-                      print(_editedProduct.title);
+                      // print(_editedProduct.title);
                     },
                   ),
                   TextFormField(
@@ -199,7 +209,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
                           title: _editedProduct.title,
                           discription: _editedProduct.discription,
                           price: double.parse(newValue!),
-                          imgUrl: _editedProduct.imgUrl);
+                          imgUrl: _editedProduct.imgUrl,
+                          isFavoraite: _editedProduct.isFavoraite);
                     },
                     validator: (value) {
                       if (value == null) {
@@ -254,7 +265,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
                           title: _editedProduct.title,
                           discription: newValue!,
                           price: _editedProduct.price,
-                          imgUrl: _editedProduct.imgUrl);
+                          imgUrl: _editedProduct.imgUrl,
+                          isFavoraite: _editedProduct.isFavoraite);
                     },
                   ),
                   Row(
@@ -318,7 +330,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                 title: _editedProduct.title,
                                 discription: _editedProduct.discription,
                                 price: _editedProduct.price,
-                                imgUrl: newValue!);
+                                imgUrl: newValue!,
+                                isFavoraite: _editedProduct.isFavoraite);
                           },
                         ),
                       ),

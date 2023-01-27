@@ -52,14 +52,28 @@ class Products with ChangeNotifier {
     //The product we got does not have id set ,so we can not directly add it to the _productItems list ,so we have to add create a new product and add set unique ID
 
     Product newProduct = Product(
-        id: DateTime.now().toString(),
-        title: product.title,
-        discription: product.discription,
-        price: product.price,
-        imgUrl: product.imgUrl,
-        );
+      id: DateTime.now().toString(),
+      title: product.title,
+      discription: product.discription,
+      price: product.price,
+      imgUrl: product.imgUrl,
+    );
 
     _productItems.add(newProduct);
     notifyListeners();
   }
+
+  void updateItem(String id, Product newProduct) {
+    final idx = _productItems.indexWhere((element) => element.id == id);
+    if (idx >= 0) {
+      _productItems[idx] = newProduct;
+      notifyListeners();
+    } else {
+      print('...');
+    }
+  }
+
+
+  @override
+  notifyListeners();
 }
