@@ -119,10 +119,26 @@ class _EditProductScreenState extends State<EditProductScreen> {
     if (_editedProduct.id == '') {
       Provider.of<Products>(context, listen: false)
           .addItem(_editedProduct)
-          .then((_) {
-            setState(() {
-      _isLoading =false;
-    });
+          .catchError((error) {
+        return showDialog(
+            context: context,
+            builder: (ctx) {
+             return  AlertDialog(
+                title:const  Text("An error has ocurred "),
+                content: const Text("Something went wrong"),
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child:const Text("Okay")),
+                ],
+              );
+            });
+      }).then((_) {
+        setState(() {
+          _isLoading = false;
+        });
         Navigator.of(context).pop();
       });
 
@@ -131,9 +147,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
       Provider.of<Products>(context, listen: false)
           .updateItem(_editedProduct.id, _editedProduct);
       setState(() {
-      _isLoading =false;
-    });
-        Navigator.of(context).pop();
+        _isLoading = false;
+      });
+      Navigator.of(context).pop();
     }
   }
 
@@ -155,185 +171,121 @@ class _EditProductScreenState extends State<EditProductScreen> {
 
           //Here we have used form instead of manual text field because as you know mnaual inputTextFeild we have to everything manually form input storing to validation ,but form manages these things internally
 
-          child: _isLoading?const Center(child: CircularProgressIndicator()
-          ):Padding(
-            padding: const EdgeInsets.all(32.0),
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  TextFormField(
-                    //It is connected to Form behind scence
+          child: _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : Padding(
+                  padding: const EdgeInsets.all(32.0),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        TextFormField(
+                          //It is connected to Form behind scence
 
-                    initialValue: intiValues['title'],
-
-                    decoration: const InputDecoration(
-                      //Hint text
-
-                      hintText: 'Product Title',
-                    ),
-                    validator: (value) {
-                      //validates the data every key stroke ,it can configured by setting auto validate true in form or ,write logic in on submitted fucntion
-
-                      if (value == null) {
-                        return "Enter the title";
-                      }
-                      if (value == "") {
-                        return "Enter the title";
-                      }
-                      return null;
-                    },
-
-                    //It controlles the icon on rightBottom may be tick ,next,submitt
-
-                    textInputAction: TextInputAction.next,
-
-                    onSaved: (newValue) {
-                      //OverWriting the existing Product
-
-                      if (newValue != null) {
-                        _editedProduct = Product(
-                            id: _editedProduct.id,
-                            title: newValue,
-                            discription: _editedProduct.discription,
-                            price: _editedProduct.price,
-                            imgUrl: _editedProduct.imgUrl,
-                            isFavoraite: _editedProduct.isFavoraite);
-                      }
-                      // print(_editedProduct.title);
-                    },
-                  ),
-                  TextFormField(
-                    initialValue: intiValues['price'],
-
-                    //It is connected to Form behind scence
-
-                    decoration: const InputDecoration(
-                      //Hint text
-
-                      hintText: 'Price',
-                    ),
-
-                    //It controlles the icon on rightBottom may be tick ,next,submitt
-
-                    textInputAction: TextInputAction.next,
-                    keyboardType: TextInputType.number,
-                    onSaved: (newValue) {
-                      //OverWriting the existing Product
-
-                      _editedProduct = Product(
-                          id: _editedProduct.id,
-                          title: _editedProduct.title,
-                          discription: _editedProduct.discription,
-                          price: double.parse(newValue!),
-                          imgUrl: _editedProduct.imgUrl,
-                          isFavoraite: _editedProduct.isFavoraite);
-                    },
-                    validator: (value) {
-                      if (value == null) {
-                        return "Please Enter the Price";
-                      }
-                      if (double.tryParse(value) == null) {
-                        return "Enter a valid number";
-                      }
-                      if (double.parse(value) <= 0) {
-                        return "Price cannot be empty";
-                      }
-                      return null;
-                    },
-                  ),
-                  TextFormField(
-                    //setting up the initial values
-
-                    initialValue: intiValues['discription'],
-
-                    //It is connected to Form behind scence
-
-                    decoration: const InputDecoration(
-                      //Hint text
-
-                      hintText: 'Discription',
-                    ),
-
-                    //It controlles the icon on rightBottom may be tick ,next,submitt
-
-                    textInputAction: TextInputAction.newline,
-
-                    //will show enter button
-
-                    maxLines: 3,
-                    keyboardType: TextInputType.multiline,
-
-                    validator: (value) {
-                      if (value == null) {
-                        return "Discription cannot be empty";
-                      }
-                      if (value.length <= 10) {
-                        return "Enter a discription greater than 10 words";
-                      }
-                      return null;
-                    },
-
-                    onSaved: (newValue) {
-                      //OverWriting the existing Product
-
-                      _editedProduct = Product(
-                          id: _editedProduct.id,
-                          title: _editedProduct.title,
-                          discription: newValue!,
-                          price: _editedProduct.price,
-                          imgUrl: _editedProduct.imgUrl,
-                          isFavoraite: _editedProduct.isFavoraite);
-                    },
-                  ),
-                  Row(
-                    children: [
-                      Container(
-                        width: 110,
-                        height: 110,
-                        margin: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                              color: Colors.orange,
-                              width: 2,
-                              style: BorderStyle.solid),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: _imageUrlController.text.isEmpty
-                            ? const Center(
-                                child: Text("Enter Image URL"),
-                              )
-                            : FittedBox(
-                                clipBehavior: Clip.antiAlias,
-                                fit: BoxFit.fill,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(33),
-                                  child: Image.network(
-                                    _imageUrlController.text,
-                                  ),
-                                ),
-                              ),
-                      ),
-                      Expanded(
-                        child: TextFormField(
-                          // initialValue: intiValues['imgUrl'],we cannot have controller and intial values same time we can configure the intial value using imgUrlcontroller
+                          initialValue: intiValues['title'],
 
                           decoration: const InputDecoration(
-                            hintText: 'Image URL',
+                            //Hint text
+
+                            hintText: 'Product Title',
                           ),
-                          textInputAction: TextInputAction.done,
-                          keyboardType: TextInputType.url,
-                          controller: _imageUrlController,
-                          focusNode: _imageUrlFocusNode,
+                          validator: (value) {
+                            //validates the data every key stroke ,it can configured by setting auto validate true in form or ,write logic in on submitted fucntion
 
-                          // Saving the input WhenEver done is pressed
+                            if (value == null) {
+                              return "Enter the title";
+                            }
+                            if (value == "") {
+                              return "Enter the title";
+                            }
+                            return null;
+                          },
 
-                          onFieldSubmitted: (_) => _onSubmit(),
+                          //It controlles the icon on rightBottom may be tick ,next,submitt
+
+                          textInputAction: TextInputAction.next,
+
+                          onSaved: (newValue) {
+                            //OverWriting the existing Product
+
+                            if (newValue != null) {
+                              _editedProduct = Product(
+                                  id: _editedProduct.id,
+                                  title: newValue,
+                                  discription: _editedProduct.discription,
+                                  price: _editedProduct.price,
+                                  imgUrl: _editedProduct.imgUrl,
+                                  isFavoraite: _editedProduct.isFavoraite);
+                            }
+                            // print(_editedProduct.title);
+                          },
+                        ),
+                        TextFormField(
+                          initialValue: intiValues['price'],
+
+                          //It is connected to Form behind scence
+
+                          decoration: const InputDecoration(
+                            //Hint text
+
+                            hintText: 'Price',
+                          ),
+
+                          //It controlles the icon on rightBottom may be tick ,next,submitt
+
+                          textInputAction: TextInputAction.next,
+                          keyboardType: TextInputType.number,
+                          onSaved: (newValue) {
+                            //OverWriting the existing Product
+
+                            _editedProduct = Product(
+                                id: _editedProduct.id,
+                                title: _editedProduct.title,
+                                discription: _editedProduct.discription,
+                                price: double.parse(newValue!),
+                                imgUrl: _editedProduct.imgUrl,
+                                isFavoraite: _editedProduct.isFavoraite);
+                          },
+                          validator: (value) {
+                            if (value == null) {
+                              return "Please Enter the Price";
+                            }
+                            if (double.tryParse(value) == null) {
+                              return "Enter a valid number";
+                            }
+                            if (double.parse(value) <= 0) {
+                              return "Price cannot be empty";
+                            }
+                            return null;
+                          },
+                        ),
+                        TextFormField(
+                          //setting up the initial values
+
+                          initialValue: intiValues['discription'],
+
+                          //It is connected to Form behind scence
+
+                          decoration: const InputDecoration(
+                            //Hint text
+
+                            hintText: 'Discription',
+                          ),
+
+                          //It controlles the icon on rightBottom may be tick ,next,submitt
+
+                          textInputAction: TextInputAction.newline,
+
+                          //will show enter button
+
+                          maxLines: 3,
+                          keyboardType: TextInputType.multiline,
 
                           validator: (value) {
-                            if (!((value?.endsWith("jpg"))! ||
-                                (value?.startsWith("https"))! ||
-                                (value?.startsWith("http"))!)) {
-                              return "Enter a valid image url";
+                            if (value == null) {
+                              return "Discription cannot be empty";
+                            }
+                            if (value.length <= 10) {
+                              return "Enter a discription greater than 10 words";
                             }
                             return null;
                           },
@@ -344,19 +296,84 @@ class _EditProductScreenState extends State<EditProductScreen> {
                             _editedProduct = Product(
                                 id: _editedProduct.id,
                                 title: _editedProduct.title,
-                                discription: _editedProduct.discription,
+                                discription: newValue!,
                                 price: _editedProduct.price,
-                                imgUrl: newValue!,
+                                imgUrl: _editedProduct.imgUrl,
                                 isFavoraite: _editedProduct.isFavoraite);
                           },
                         ),
-                      ),
-                    ],
+                        Row(
+                          children: [
+                            Container(
+                              width: 110,
+                              height: 110,
+                              margin: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: Colors.orange,
+                                    width: 2,
+                                    style: BorderStyle.solid),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: _imageUrlController.text.isEmpty
+                                  ? const Center(
+                                      child: Text("Enter Image URL"),
+                                    )
+                                  : FittedBox(
+                                      clipBehavior: Clip.antiAlias,
+                                      fit: BoxFit.fill,
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(33),
+                                        child: Image.network(
+                                          _imageUrlController.text,
+                                        ),
+                                      ),
+                                    ),
+                            ),
+                            Expanded(
+                              child: TextFormField(
+                                // initialValue: intiValues['imgUrl'],we cannot have controller and intial values same time we can configure the intial value using imgUrlcontroller
+
+                                decoration: const InputDecoration(
+                                  hintText: 'Image URL',
+                                ),
+                                textInputAction: TextInputAction.done,
+                                keyboardType: TextInputType.url,
+                                controller: _imageUrlController,
+                                focusNode: _imageUrlFocusNode,
+
+                                // Saving the input WhenEver done is pressed
+
+                                onFieldSubmitted: (_) => _onSubmit(),
+
+                                validator: (value) {
+                                  if (!((value?.endsWith("jpg"))! ||
+                                      (value?.startsWith("https"))! ||
+                                      (value?.startsWith("http"))!)) {
+                                    return "Enter a valid image url";
+                                  }
+                                  return null;
+                                },
+
+                                onSaved: (newValue) {
+                                  //OverWriting the existing Product
+
+                                  _editedProduct = Product(
+                                      id: _editedProduct.id,
+                                      title: _editedProduct.title,
+                                      discription: _editedProduct.discription,
+                                      price: _editedProduct.price,
+                                      imgUrl: newValue!,
+                                      isFavoraite: _editedProduct.isFavoraite);
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                ],
-              ),
-            ),
-          )),
+                )),
     );
   }
 }

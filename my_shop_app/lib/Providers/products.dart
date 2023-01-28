@@ -49,37 +49,36 @@ class Products with ChangeNotifier {
     return _productItems.firstWhere((item) => item.id == requiredId);
   }
 
+  //The product we got does not have id set ,so we can not directly add it to the _productItems list ,so we have to add create a new product and add set unique ID
 
-    //The product we got does not have id set ,so we can not directly add it to the _productItems list ,so we have to add create a new product and add set unique ID
+  //now I want to store the data in local memory as well as in cloud
 
-    //now I want to store the data in local memory as well as in cloud
+  Future<void> addItem(Product product) async {
+    final url = Uri.https(
+        'shopping-app-tutorial-18ffb-default-rtdb.firebaseio.com', '/products');
+    try {
+      final response = await http.post(url,
+          body: json.encode({
+            'title': product.title,
+            'discription': product.discription,
+            'price': product.price,
+            'imgUrl': product.imgUrl,
+            'isFavorite': product.isFavoraite,
+          }));
 
-    Future<void> addItem(Product product) async {
-      final url = Uri.https(
-          'shopping-app-tutorial-18ffb-default-rtdb.firebaseio.com',
-          '/products.json');
-      try {
-        final response = await http.post(url,
-            body: json.encode({
-              'title': product.title,
-              'discription': product.discription,
-              'price': product.price,
-              'imgUrl': product.imgUrl,
-              'isFavorite': product.isFavoraite,
-            }));
-
-        Product newProduct = Product(
-          id: json.decode(response.body)['name'],
-          title: product.title,
-          discription: product.discription,
-          price: product.price,
-          imgUrl: product.imgUrl,
-        );
-        _productItems.add(newProduct);
-        notifyListeners();
-      } catch (error) {
-        print(error);
-      }
+      Product newProduct = Product(
+        id: json.decode(response.body)['name'],
+        title: product.title,
+        discription: product.discription,
+        price: product.price,
+        imgUrl: product.imgUrl,
+      );
+      _productItems.add(newProduct);
+      notifyListeners();
+    } catch (error) {
+      print(error);
+      rethrow;
+    }
   }
 
   void updateItem(String id, Product newProduct) {
