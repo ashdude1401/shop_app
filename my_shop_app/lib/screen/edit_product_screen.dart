@@ -42,6 +42,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
   }
 
   var _isInt = true;
+  var _isLoading = false;
   var intiValues = {
     'id': '',
     'title': '',
@@ -112,14 +113,28 @@ class _EditProductScreenState extends State<EditProductScreen> {
 
     //Here we do not have ser listen to false because we only want to invoke the methode and don't want to listen to the changes (i.e we don't want to rebuild if something changes. Provider is same a setState (listen:true) it rebuilds the parent widget)
 
+    setState(() {
+      _isLoading = true;
+    });
     if (_editedProduct.id == '') {
-      Provider.of<Products>(context, listen: false).addItem(_editedProduct);
+      Provider.of<Products>(context, listen: false)
+          .addItem(_editedProduct)
+          .then((_) {
+            setState(() {
+      _isLoading =false;
+    });
+        Navigator.of(context).pop();
+      });
+
+      //poping screen only after all the products gets added in database
     } else {
       Provider.of<Products>(context, listen: false)
           .updateItem(_editedProduct.id, _editedProduct);
+      setState(() {
+      _isLoading =false;
+    });
+        Navigator.of(context).pop();
     }
-
-    Navigator.of(context).pop();
   }
 
   @override
@@ -140,7 +155,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
 
           //Here we have used form instead of manual text field because as you know mnaual inputTextFeild we have to everything manually form input storing to validation ,but form manages these things internally
 
-          child: Padding(
+          child: _isLoading?const Center(child: CircularProgressIndicator()
+          ):Padding(
             padding: const EdgeInsets.all(32.0),
             child: SingleChildScrollView(
               child: Column(
