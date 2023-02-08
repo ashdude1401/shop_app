@@ -16,24 +16,24 @@ class ProductOverview extends StatefulWidget {
   State<ProductOverview> createState() => _ProductOverviewState();
 }
 
+bool _isLoading =false;
+
 class _ProductOverviewState extends State<ProductOverview> {
   @override
   void initState() {
+      setState(() {
+        _isLoading = true;
+      });
     // TODO: implement initState
-    Provider.of<Products>(context, listen: false).fetchAndSetProducts();
+    Provider.of<Products>(context, listen: false)
+        .fetchAndSetProducts()
+        .then((_) {
+      setState(() {
+        _isLoading = false;
+      });
+    });
     super.initState();
   }
-
-  // var _isInit = true;
-  // @override
-  // void didChangeDependencies() {
-   // TODO: implement didChangeDependencies
-  //   if (_isInit){
-  //     Provider.of<Products>(context, listen: false).fetchAndSetProducts();
-  //   }
-  //   _isInit = false;
-  //   super.didChangeDependencies();
-  // }
 
   var filterStatus = false;
   @override
@@ -90,7 +90,7 @@ class _ProductOverviewState extends State<ProductOverview> {
           ],
         ),
         drawer: const AppDrawer(),
-        body: GridViewOfProducts(
+        body: _isLoading?Center(child: CircularProgressIndicator(color: Theme.of(context).primaryColor),): GridViewOfProducts(
           favFilterOn: filterStatus,
         ));
   }

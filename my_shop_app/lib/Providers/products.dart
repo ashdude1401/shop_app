@@ -83,17 +83,6 @@ class Products with ChangeNotifier {
   }
 
   Future<void> fetchAndSetProducts() async {
-    // final url = Uri.http(
-    //     'shopping-app-tutorial-18ffb-default-rtdb.firebaseio.com',
-    //     '/products.json');
-    // try {
-    //   final response = await http.get(url);
-    //   print(json.decode(response.body));
-    //   final fectchedProduct = json.decode(response.body) ;
-    // } catch (error) {
-    //   print(error);
-    // }
-
     final Uri apiUrl = Uri.parse(
         'https://shopping-app-tutorial-18ffb-default-rtdb.firebaseio.com/products.json');
 
@@ -125,15 +114,35 @@ class Products with ChangeNotifier {
     }
   }
 
-  void updateItem(String id, Product newProduct) {
-    final idx = _productItems.indexWhere((element) => element.id == id);
-    if (idx >= 0) {
+  Future<void> updateItem(String id, Product newProduct) async {
+  final idx = _productItems.indexWhere((element) => element.id == id);
+  if (idx >= 0) {
+    final Uri apiUrl = Uri.parse(
+        'https://shopping-app-tutorial-18ffb-default-rtdb.firebaseio.com/products/$id.json');
+    try {
+      final response = await http.patch(apiUrl, body: json.encode({
+        'discription': newProduct.discription,
+        'imgUrl': newProduct.imgUrl,
+        'price': newProduct.price,
+        'title': newProduct.title
+      }));
+
+      if (response.statusCode == 200) {
+        print('Update was successful');
+      } else {
+        throw Exception('Update failed with status code ${response.statusCode}');
+      }
       _productItems[idx] = newProduct;
       notifyListeners();
-    } else {
-      print('...');
+    } catch (error) {
+      print(error);
+      rethrow;
     }
+  } else {
+    throw Exception('Item with id $id not found');
   }
+}
+
 
   void deleteItem(String id) {
     _productItems.removeWhere((element) => element.id == id);
