@@ -4,38 +4,38 @@ import 'product.dart';
 import 'dart:convert';
 
 class Products with ChangeNotifier {
-  final List<Product> _productItems = [
-    Product(
-      id: 'p1',
-      title: 'Jeans',
-      discription: 'Black Levi jeans',
-      price: 800,
-      imgUrl:
-          'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Trousers%2C_dress_%28AM_1960.022-8%29.jpg/512px-Trousers%2C_dress_%28AM_1960.022-8%29.jpg',
-    ),
-    Product(
-      id: 'p2',
-      title: 'scaff',
-      discription: 'Yellow stylish scaff',
-      price: 29.99,
-      imgUrl: 'https://live.staticflickr.com/4043/4438260868_cc79b3369d_z.jpg',
-    ),
-    Product(
-      id: 'p3',
-      title: 'Red Shirt',
-      discription: 'A red shirt - it is pretty red!',
-      price: 29.99,
-      imgUrl:
-          'https://cdn.pixabay.com/photo/2016/10/02/22/17/red-t-shirt-1710578_1280.jpg',
-    ),
-    Product(
-      id: 'p4',
-      title: 'Fry Pan',
-      discription: 'Bakalite stcik proof pan',
-      price: 400,
-      imgUrl:
-          'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Cast-Iron-Pan.jpg/1024px-Cast-Iron-Pan.jpg',
-    ),
+  List<Product> _productItems = [
+    // Product(
+    //   id: 'p1',
+    //   title: 'Jeans',
+    //   discription: 'Black Levi jeans',
+    //   price: 800,
+    //   imgUrl:
+    //       'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Trousers%2C_dress_%28AM_1960.022-8%29.jpg/512px-Trousers%2C_dress_%28AM_1960.022-8%29.jpg',
+    // ),
+    // Product(
+    //   id: 'p2',
+    //   title: 'scaff',
+    //   discription: 'Yellow stylish scaff',
+    //   price: 29.99,
+    //   imgUrl: 'https://live.staticflickr.com/4043/4438260868_cc79b3369d_z.jpg',
+    // ),
+    // Product(
+    //   id: 'p3',
+    //   title: 'Red Shirt',
+    //   discription: 'A red shirt - it is pretty red!',
+    //   price: 29.99,
+    //   imgUrl:
+    //       'https://cdn.pixabay.com/photo/2016/10/02/22/17/red-t-shirt-1710578_1280.jpg',
+    // ),
+    // Product(
+    //   id: 'p4',
+    //   title: 'Fry Pan',
+    //   discription: 'Bakalite stcik proof pan',
+    //   price: 400,
+    //   imgUrl:
+    //       'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Cast-Iron-Pan.jpg/1024px-Cast-Iron-Pan.jpg',
+    // ),
   ];
   List<Product> get items {
     return [..._productItems];
@@ -55,7 +55,8 @@ class Products with ChangeNotifier {
 
   Future<void> addItem(Product product) async {
     final url = Uri.https(
-        'shopping-app-tutorial-18ffb-default-rtdb.firebaseio.com', '/products');
+        'shopping-app-tutorial-18ffb-default-rtdb.firebaseio.com',
+        '/products.json');
     try {
       final response = await http.post(url,
           body: json.encode({
@@ -78,6 +79,49 @@ class Products with ChangeNotifier {
     } catch (error) {
       print(error);
       rethrow;
+    }
+  }
+
+  Future<void> fetchAndSetProducts() async {
+    // final url = Uri.http(
+    //     'shopping-app-tutorial-18ffb-default-rtdb.firebaseio.com',
+    //     '/products.json');
+    // try {
+    //   final response = await http.get(url);
+    //   print(json.decode(response.body));
+    //   final fectchedProduct = json.decode(response.body) ;
+    // } catch (error) {
+    //   print(error);
+    // }
+
+    final Uri apiUrl = Uri.parse(
+        'https://shopping-app-tutorial-18ffb-default-rtdb.firebaseio.com/products.json');
+
+    try {
+      var response = await http.get(apiUrl);
+      if (response.statusCode == 200) {
+        var extractedData = json.decode(response.body) as Map<String, dynamic>;
+        final List<Product> loadedProducts = [];
+        extractedData.forEach(
+          (prodId, prodData) {
+            loadedProducts.add(Product(
+                id: prodId,
+                title: prodData['title'],
+                discription: prodData['discription'],
+                price: prodData['price'],
+                imgUrl: prodData['imgUrl'],
+                isFavoraite: prodData['isFavorite']));
+          },
+        );
+        _productItems = loadedProducts;
+        notifyListeners();
+        print(extractedData);
+        // Use the data as needed in your app
+      } else {
+        // Handle error cases
+      }
+    } catch (error) {
+      print(error);
     }
   }
 

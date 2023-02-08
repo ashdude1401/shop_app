@@ -3,6 +3,7 @@ import 'package:my_shop_app/Providers/cart.dart';
 import 'package:my_shop_app/screen/cart_screen.dart';
 import 'package:my_shop_app/widget/app_drawer.dart';
 // import '../widget/badge.dart';
+import '../Providers/products.dart';
 import '../widget/gridView_of_product.dart';
 import 'package:provider/provider.dart';
 
@@ -16,6 +17,24 @@ class ProductOverview extends StatefulWidget {
 }
 
 class _ProductOverviewState extends State<ProductOverview> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    Provider.of<Products>(context, listen: false).fetchAndSetProducts();
+    super.initState();
+  }
+
+  // var _isInit = true;
+  // @override
+  // void didChangeDependencies() {
+   // TODO: implement didChangeDependencies
+  //   if (_isInit){
+  //     Provider.of<Products>(context, listen: false).fetchAndSetProducts();
+  //   }
+  //   _isInit = false;
+  //   super.didChangeDependencies();
+  // }
+
   var filterStatus = false;
   @override
   Widget build(BuildContext context) {

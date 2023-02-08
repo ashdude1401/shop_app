@@ -99,7 +99,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     super.dispose();
   }
 
-  void _onSubmit() {
+  void _onSubmit() async {
     //We have to save the inputs in Form inputTextField by refering to .save() method present in form which excessed using _formKey.currentState
 
     final isValid = _formKey.currentState?.validate();
@@ -117,32 +117,31 @@ class _EditProductScreenState extends State<EditProductScreen> {
       _isLoading = true;
     });
     if (_editedProduct.id == '') {
-      Provider.of<Products>(context, listen: false)
-          .addItem(_editedProduct)
-          .catchError((error) {
-        return showDialog(
+      try {
+        await Provider.of<Products>(context, listen: false)
+            .addItem(_editedProduct);
+        Navigator.of(context).pop();
+      } catch (error) {
+        await showDialog(
             context: context,
             builder: (ctx) {
-             return  AlertDialog(
-                title:const  Text("An error has ocurred "),
+              return AlertDialog(
+                title: const Text("An error has ocurred "),
                 content: const Text("Something went wrong"),
                 actions: [
                   TextButton(
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
-                      child:const Text("Okay")),
+                      child: const Text("Okay")),
                 ],
               );
             });
-      }).then((_) {
+      } finally {
         setState(() {
           _isLoading = false;
         });
-        Navigator.of(context).pop();
-      });
-
-      //poping screen only after all the products gets added in database
+      }
     } else {
       Provider.of<Products>(context, listen: false)
           .updateItem(_editedProduct.id, _editedProduct);
