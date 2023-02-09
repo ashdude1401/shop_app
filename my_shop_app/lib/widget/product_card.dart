@@ -41,7 +41,16 @@ class ProductCard extends StatelessWidget {
                     : Icons.favorite_border,
                 color: Colors.orange,
               ),
-              onPressed: () => productItem.toggleFavoraite(),
+              onPressed: () async {
+                try {
+                  await productItem.toggleFavoraite();
+                } catch (error) {
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    content: Text('Somthing went wrong'),
+                    duration: Duration(seconds: 2),
+                  ));
+                }
+              },
             )),
       ),
       title: Text(

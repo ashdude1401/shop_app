@@ -115,37 +115,59 @@ class Products with ChangeNotifier {
   }
 
   Future<void> updateItem(String id, Product newProduct) async {
-  final idx = _productItems.indexWhere((element) => element.id == id);
-  if (idx >= 0) {
-    final Uri apiUrl = Uri.parse(
-        'https://shopping-app-tutorial-18ffb-default-rtdb.firebaseio.com/products/$id.json');
-    try {
-      final response = await http.patch(apiUrl, body: json.encode({
-        'discription': newProduct.discription,
-        'imgUrl': newProduct.imgUrl,
-        'price': newProduct.price,
-        'title': newProduct.title
-      }));
+    final idx = _productItems.indexWhere((element) => element.id == id);
+    if (idx >= 0) {
+      final Uri apiUrl = Uri.parse(
+          'https://shopping-app-tutorial-18ffb-default-rtdb.firebaseio.com/products/$id.json');
+      try {
+        final response = await http.patch(apiUrl,
+            body: json.encode({
+              'discription': newProduct.discription,
+              'imgUrl': newProduct.imgUrl,
+              'price': newProduct.price,
+              'title': newProduct.title
+            }));
 
-      if (response.statusCode == 200) {
-        print('Update was successful');
-      } else {
-        throw Exception('Update failed with status code ${response.statusCode}');
+        if (response.statusCode == 200) {
+          print('Update was successful');
+        } else {
+          throw Exception(
+              'Update failed with status code ${response.statusCode}');
+        }
+        _productItems[idx] = newProduct;
+        notifyListeners();
+      } catch (error) {
+        print(error);
+        rethrow;
       }
-      _productItems[idx] = newProduct;
-      notifyListeners();
-    } catch (error) {
-      print(error);
-      rethrow;
+    } else {
+      throw Exception('Item with id $id not found');
     }
-  } else {
-    throw Exception('Item with id $id not found');
   }
-}
 
-
-  void deleteItem(String id) {
-    _productItems.removeWhere((element) => element.id == id);
-    notifyListeners();
+  Future<void> deleteItem(String id) async {
+    final int idx = _productItems.indexWhere((element) => element.id == id);
+    if (idx >= 0) {
+      final deletedProduct = _productItems[idx];
+      _productItems.removeAt(idx);
+      notifyListeners();
+      final Uri apiUrl = Uri.parse(
+          'https://shopping-app-tutorial-18ffb-default-rtdb.firebaseio.com/products/$id.json');
+      try {
+        final response = await http.delete(apiUrl);
+        if (response.statusCode >= 400) {
+          throw Exception('Error deleting product from Firebase');
+        }
+        print('Product deleted from Firebase successfully.');
+      } catch (error) {
+        _productItems.insert(idx, deletedProduct);
+        notifyListeners();
+        print(
+            'Error deleting product from Firebase. Product was restored. Error: $error');
+        rethrow;
+      }
+    } else {
+      print('Product not found in the list');
+    }
   }
 }
