@@ -47,21 +47,7 @@ class CartOverviewScreen extends StatelessWidget {
                     ),
                     backgroundColor: Theme.of(context).primaryColor,
                   ),
-                  TextButton(
-                      onPressed: () {
-                        //Because we only want to get the data
-
-                        Provider.of<Orders>(context, listen: false).addOrder(
-                            cart.items.values.toList(), cart.totalItemPrice);
-
-                        //Here we have set listen to true because we want other who are listening to cart notified by the changes
-
-                        cart.clear();
-                      },
-                      child: const Text(
-                        "Place Order",
-                        style: TextStyle(color: Colors.black54, fontSize: 18),
-                      )),
+                  OrderButton(cart: cart),
                 ],
               ),
             ),
@@ -85,5 +71,47 @@ class CartOverviewScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class OrderButton extends StatefulWidget {
+  const OrderButton({
+    super.key,
+    required this.cart,
+  });
+
+  final Cart cart;
+
+  @override
+  State<OrderButton> createState() => _OrderButtonState();
+}
+
+class _OrderButtonState extends State<OrderButton> {
+  var _isLoading = false;
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+        onPressed:( widget.cart.totalItemPrice <= 0||_isLoading)
+            ? null
+            : () async {
+                try {
+                  setState(() {
+                    _isLoading = true;
+                  });
+                  await Provider.of<Orders>(context, listen: false).addOrder(
+                      widget.cart.items.values.toList(),
+                      widget.cart.totalItemPrice);
+                  setState(() {
+                    _isLoading = false;
+                  });
+                  widget.cart.clear();
+                } catch (error) {
+                  print('somthing went wrong will adding to cart');
+                }
+              },
+        child: _isLoading?Center(child: const CircularProgressIndicator()) :const Text(
+          "Place Order",
+          style: TextStyle(color: Colors.black54, fontSize: 18),
+        ));
   }
 }

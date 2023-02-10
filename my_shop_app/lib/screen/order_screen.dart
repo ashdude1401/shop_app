@@ -4,9 +4,35 @@ import '../widget/order_item.dart' as wd;
 
 import '../Providers/order.dart';
 
-class OrderScreen extends StatelessWidget {
+class OrderScreen extends StatefulWidget {
   const OrderScreen({super.key});
   static const routeName = '/orders';
+
+  @override
+  State<OrderScreen> createState() => _OrderScreenState();
+}
+
+class _OrderScreenState extends State<OrderScreen> {
+  var _isLoading = false;
+  @override
+  void initState() {
+    // TODO: implement initState
+    try {
+      setState(() {
+        _isLoading = true;
+      });
+      Provider.of<Orders>(context, listen: false)
+          .fectchAndSetOrders()
+          .then((_) {
+        setState(() {
+          _isLoading = false;
+        });
+      });
+      super.initState();
+    } catch (error) {
+      print('Enable to fetch from server');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +43,7 @@ class OrderScreen extends StatelessWidget {
       ),
       body: orderDetail.orders.isEmpty
           ? const Center(child: Text("No orders"))
-          : ListView.builder(
+          :_isLoading?const Center(child: CircularProgressIndicator()): ListView.builder(
               itemCount: orderDetail.orders.length,
               itemBuilder: ((context, i) => wd.OrderItem(
                     order: orderDetail.orders[i],
