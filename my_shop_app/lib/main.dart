@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_shop_app/screen/auth_screen.dart';
 import 'package:my_shop_app/screen/edit_product_screen.dart';
 import 'package:my_shop_app/screen/order_screen.dart';
 import 'package:my_shop_app/screen/user_products_screen.dart';
@@ -29,7 +30,7 @@ class MyShopApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: "My shop App",
-        home: const MyHomePage(),
+        home: const AuthScreen(),
         theme: ThemeData(
             primarySwatch: Colors.purple,
             fontFamily: 'Anton',
@@ -41,6 +42,7 @@ class MyShopApp extends StatelessWidget {
           OrderScreen.routeName: (context) => const OrderScreen(),
           UserProductsScreen.routeName: (context) => const UserProductsScreen(),
           EditProductScreen.routeName: (context) => const EditProductScreen(),
+          AuthScreen.routeName: (context) => const AuthScreen()
         },
       ),
     );
