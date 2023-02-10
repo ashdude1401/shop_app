@@ -13,42 +13,42 @@ class OrderScreen extends StatefulWidget {
 }
 
 class _OrderScreenState extends State<OrderScreen> {
-  var _isLoading = false;
+  Future?  _orderFuture;
   @override
   void initState() {
     // TODO: implement initState
-    try {
-      setState(() {
-        _isLoading = true;
-      });
-      Provider.of<Orders>(context, listen: false)
-          .fectchAndSetOrders()
-          .then((_) {
-        setState(() {
-          _isLoading = false;
-        });
-      });
-      super.initState();
-    } catch (error) {
-      print('Enable to fetch from server');
-    }
+    _orderFuture=Provider.of<Orders>(context, listen: false).fectchAndSetOrders() ;
+    super.initState();
   }
-
   @override
   Widget build(BuildContext context) {
-    final orderDetail = Provider.of<Orders>(context);
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Orders"),
-      ),
-      body: orderDetail.orders.isEmpty
-          ? const Center(child: Text("No orders"))
-          :_isLoading?const Center(child: CircularProgressIndicator()): ListView.builder(
-              itemCount: orderDetail.orders.length,
-              itemBuilder: ((context, i) => wd.OrderItem(
-                    order: orderDetail.orders[i],
-                  )),
-            ),
-    );
+        appBar: AppBar(
+          title: const Text("Orders"),
+        ),
+        body: FutureBuilder(
+          future:_orderFuture,
+              
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (snapshot.error != null) {
+              //Error handling
+              return const Text('AN ERROR OCCURED!');
+            } else {
+              return Consumer<Orders>(
+                builder: (context, orderDetail, child) {
+                  return ListView.builder(
+                    itemCount: orderDetail.orders.length,
+                    itemBuilder: ((context, i) => wd.OrderItem(
+                          order: orderDetail.orders[i],
+                        )),
+                  );
+                },
+              );
+            }
+          },
+        ));
   }
 }
