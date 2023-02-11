@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:my_shop_app/screen/auth_screen.dart';
-import 'package:my_shop_app/screen/edit_product_screen.dart';
-import 'package:my_shop_app/screen/order_screen.dart';
-import 'package:my_shop_app/screen/user_products_screen.dart';
+import '../Providers/auth.dart';
+import '../screen/auth_screen.dart';
+import '../screen/edit_product_screen.dart';
+import '../screen/order_screen.dart';
+import '../screen/user_products_screen.dart';
 import './Providers/cart.dart';
 import './Providers/order.dart';
 import './Providers/products.dart';
@@ -23,14 +24,15 @@ class MyShopApp extends StatelessWidget {
 
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (context)=>Auth()),
         ChangeNotifierProvider(create: ((context) => Products())),
         ChangeNotifierProvider(create: (context) => Cart()),
         ChangeNotifierProvider(create: (context) => Orders()),
       ],
-      child: MaterialApp(
+      child:  Consumer<Auth>(builder: (context, auth, _) =>MaterialApp(
         debugShowCheckedModeBanner: false,
         title: "My shop App",
-        home: const AuthScreen(),
+        home:auth.isAuth?const ProductOverview(): const AuthScreen(),
         theme: ThemeData(
             primarySwatch: Colors.purple,
             fontFamily: 'Anton',
@@ -44,7 +46,7 @@ class MyShopApp extends StatelessWidget {
           EditProductScreen.routeName: (context) => const EditProductScreen(),
           AuthScreen.routeName: (context) => const AuthScreen()
         },
-      ),
+      ), ), 
     );
   }
 }
